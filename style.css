@@ -3472,110 +3472,8 @@ tr.row-complete td:nth-child(2)::before {
 .owner-login-btn:hover {
     background: #1e2d47;
 }
-
-.login-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.72);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.login-box {
-    width: min(420px, 100%);
-    box-sizing: border-box;
-    padding: 30px;
-    background: #111a2c;
-    border: 1px solid #24324a;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-    position: relative;
-}
-
-.close-login {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    border: none;
-    background: transparent;
-    color: #94a3b8;
-    font-size: 26px;
-    cursor: pointer;
-}
-
-.login-icon {
-    text-align: center;
-    font-size: 34px;
-    margin-bottom: 10px;
-}
-
-.login-box h2 {
-    margin: 0;
-    text-align: center;
-    color: #f1f5f9;
-    font-size: 20px;
-}
-
-.login-box > p {
-    text-align: center;
-    color: #8fa0b8;
-    font-size: 13px;
-    margin: 8px 0 22px;
-}
-
-.login-box label {
-    display: block;
-    margin: 14px 0 7px;
-    color: #cbd5e1;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.login-box input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 11px 12px;
-    border-radius: 8px;
-    border: 1px solid #334155;
-    background: #0d1424;
-    color: #f1f5f9;
-    outline: none;
-}
-
-.login-box input:focus {
-    border-color: #64748b;
-}
-
-.login-submit {
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px;
-    border: none;
-    border-radius: 9px;
-    background: #24324a;
-    color: #f1f5f9;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.login-submit:hover {
-    background: #334155;
-}
-
-.login-message {
-    min-height: 18px;
-    margin-top: 12px !important;
-    color: #f87171 !important;
-    font-size: 12px !important;
-}
-
 /* Fix for Mobile Login Display Fallbacks */
 .login-overlay {
-    display: none !important; /* Hide it by default */
     position: fixed;
     inset: 0;
     z-index: 9999;
@@ -3586,11 +3484,6 @@ tr.row-complete td:nth-child(2)::before {
     padding: 20px;
 }
 
-/* When active, show the layout flexbox */
-.login-overlay.show, .login-overlay[style*="display: flex"] {
-    display: flex !important;
-}
-
 .login-box {
     animation: modalSlideUp 0.3s ease-out;
 }
@@ -3599,3 +3492,4 @@ tr.row-complete td:nth-child(2)::before {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+
