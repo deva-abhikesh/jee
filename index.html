@@ -20,7 +20,102 @@
 <body>
 
 <div class="app">
+    <!-- ================= ACCESS BAR ================= -->
 
+    <div class="access-bar">
+
+        <div class="access-status">
+
+            <span id="accessDot"></span>
+
+            <span id="accessText">
+                👁️ VIEW MODE
+            </span>
+
+        </div>
+
+        <button
+            id="ownerLoginBtn"
+            class="owner-login-btn"
+        >
+            🔐 Owner Login
+        </button>
+
+    </div>
+
+
+    <!-- ================= OWNER LOGIN ================= -->
+
+    <div
+        id="loginOverlay"
+        class="login-overlay"
+        style="display: none;"
+    >
+
+        <div class="login-box">
+
+            <button
+                id="closeLoginBtn"
+                class="close-login"
+                type="button"
+            >
+                ×
+            </button>
+
+            <div class="login-icon">
+                👑
+            </div>
+
+            <h2>
+                ABHIKESH OWNER LOGIN
+            </h2>
+
+            <p>
+                Login to edit your JEE Master Tracker
+            </p>
+
+
+            <label for="ownerEmail">
+                Email
+            </label>
+
+            <input
+                id="ownerEmail"
+                type="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+            >
+
+
+            <label for="ownerPassword">
+                Password
+            </label>
+
+            <input
+                id="ownerPassword"
+                type="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+            >
+
+
+            <button
+                id="loginSubmitBtn"
+                class="login-submit"
+                type="button"
+            >
+                🔓 Login
+            </button>
+
+
+            <p
+                id="loginMessage"
+                class="login-message"
+            ></p>
+
+        </div>
+
+    </div>
 
     <!-- ================= HEADER ================= -->
 
@@ -578,6 +673,375 @@
 
 </div>
 
+
+<script type="module">
+
+    import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+        getAuth,
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged
+    }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+    getFirestore,
+    doc,
+    setDoc
+}
+    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyD5bmDe_0ta2w7wo_Ivz9B4SYLIOlUOnOQ",
+  authDomain: "abhikesh-jee-tracker.firebaseapp.com",
+  projectId: "abhikesh-jee-tracker",
+  storageBucket: "abhikesh-jee-tracker.firebasestorage.app",
+  messagingSenderId: "429682445647",
+  appId: "1:429682445647:web:b33a1bc0e4ffc33ad6893a"
+};
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+/* =================================================
+   SAVE TRACKER PROGRESS TO FIREBASE
+================================================= */
+
+window.saveTrackerToFirebase =
+    async function(subject, chapterIndex, task, value) {
+
+        if (!auth.currentUser) {
+            return;
+        }
+
+        try {
+
+            const progressRef = doc(
+                db,
+                "trackerProgress",
+                auth.currentUser.uid
+            );
+
+            await setDoc(
+                progressRef,
+                {
+                    [`${subject}_${chapterIndex}_${task}`]: value
+                },
+                {
+                    merge: true
+                }
+            );
+
+            console.log(
+                "☁️ Progress saved to Firebase:",
+                subject,
+                chapterIndex,
+                task,
+                value
+            );
+
+        } catch (error) {
+
+            console.error(
+                "❌ Firebase save error:",
+                error
+            );
+
+        }
+
+    };
+
+
+    window.firebaseAuth = auth;
+    window.firebaseDB = db;
+/* =================================================
+   FIRESTORE TRACKER DATA
+================================================= */
+
+const trackerRef = doc(
+    db,
+    "trackers",
+    "abhikesh"
+);
+
+
+/* SAVE ONE CHECKBOX */
+
+window.saveTrackerToFirebase =
+    async function(
+        subject,
+        chapterIndex,
+        task,
+        value
+    ) {
+
+        try {
+
+            await setDoc(
+                trackerRef,
+                {
+                    [`${subject}_${chapterIndex}_${task}`]: value
+                },
+                {
+                    merge: true
+                }
+            );
+
+            console.log(
+                "Firebase saved:",
+                subject,
+                chapterIndex,
+                task,
+                value
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Firebase save error:",
+                error
+            );
+
+        }
+
+    };
+
+
+/* LOAD ALL TRACKER DATA */
+
+window.loadTrackerFromFirebase =
+    async function() {
+
+        try {
+
+            const snapshot =
+                await getDoc(trackerRef);
+
+
+            if (!snapshot.exists()) {
+
+                console.log(
+                    "No tracker data found in Firebase yet."
+                );
+
+                return {};
+
+            }
+
+
+            console.log(
+                "Firebase tracker data loaded."
+            );
+
+
+            return snapshot.data();
+
+        } catch (error) {
+
+            console.error(
+                "Firebase load error:",
+                error
+            );
+
+            return {};
+
+        }
+
+    };
+
+    /* =================================================
+       OWNER LOGIN TEST
+    ================================================= */
+
+    window.firebaseLogin =
+        async function(email, password) {
+
+            try {
+
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+                return {
+                    success: true
+                };
+
+            } catch (error) {
+
+                return {
+                    success: false,
+                    message: error.message
+                };
+
+            }
+
+        };
+
+
+    window.firebaseLogout =
+        async function() {
+
+            await signOut(auth);
+
+        };
+
+
+    onAuthStateChanged(
+        auth,
+        function(user) {
+
+            if (user) {
+
+                console.log(
+                    "OWNER LOGGED IN:",
+                    user.uid
+                );
+
+                window.firebaseUser = user;
+ if (window.loadFirebaseProgress) {
+
+    window.loadFirebaseProgress();
+
+} else {
+
+    window.firebaseLoadPending = true;
+
+}
+            } else {
+
+                console.log(
+                    "NO OWNER LOGGED IN"
+                );
+
+                window.firebaseUser = null;
+
+            }
+
+        }
+    );
+
+    /* =================================================
+       OWNER LOGIN UI
+    ================================================= */
+
+    document
+        .getElementById("ownerLoginBtn")
+        .addEventListener(
+            "click",
+            function() {
+
+                document
+                    .getElementById("loginOverlay")
+                    .style.display = "flex";
+
+            }
+        );
+
+
+    document
+        .getElementById("closeLoginBtn")
+        .addEventListener(
+            "click",
+            function() {
+
+                document
+                    .getElementById("loginOverlay")
+                    .style.display = "none";
+
+            }
+        );
+
+    /* =================================================
+       OWNER LOGIN SUBMIT
+    ================================================= */
+
+    document
+        .getElementById("loginSubmitBtn")
+        .addEventListener(
+            "click",
+            async function() {
+
+                const email =
+                    document
+                        .getElementById("ownerEmail")
+                        .value
+                        .trim();
+
+                const password =
+                    document
+                        .getElementById("ownerPassword")
+                        .value;
+
+                const message =
+                    document.getElementById(
+                        "loginMessage"
+                    );
+
+
+                if (!email || !password) {
+
+                    message.textContent =
+                        "Please enter your email and password.";
+
+                    return;
+
+                }
+
+
+                message.textContent =
+                    "Logging in...";
+
+
+                const result =
+                    await window.firebaseLogin(
+                        email,
+                        password
+                    );
+
+
+                if (result.success) {
+
+                    message.textContent =
+                        "✅ Login successful!";
+
+
+                    document
+                        .getElementById("loginOverlay")
+                        .style.display = "none";
+
+
+                    document
+                        .getElementById("ownerEmail")
+                        .value = "";
+
+                    document
+                        .getElementById("ownerPassword")
+                        .value = "";
+
+
+                } else {
+
+                    message.textContent =
+                        "❌ Login failed. Please check your email and password.";
+
+                    console.error(
+                        "Firebase login error:",
+                        result.message
+                    );
+
+                }
+
+            }
+        );
+
+</script>
 
 <script src="script.js"></script>
 

@@ -166,7 +166,26 @@ function saveValue(subject, chapterIndex, task, value) {
         value
     );
 
+
+    /* SAVE TO FIREBASE */
+
+    if (
+        window.firebaseUser &&
+        window.saveTrackerToFirebase
+    ) {
+
+        window.saveTrackerToFirebase(
+            subject,
+            chapterIndex,
+            task,
+            value
+        );
+
+    }
+
 }
+
+
 
 
 /* =====================================================
