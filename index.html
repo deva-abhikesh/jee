@@ -768,9 +768,13 @@ console.log(
 window.loadTrackerFromFirebase =
     async function() {
 
-        if (!auth.currentUser) {
-            return {};
-        }
+        try {
+
+            const progressRef = doc(
+                db,
+                "trackerProgress",
+                "Of8L3iLIUvTbCU1QGjP2BGKWsqV2"
+            );
 
         try {
 
