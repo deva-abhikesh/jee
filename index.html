@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ABHIKESH | JEE 2027 Master Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <div class="profile-header">
+
+            <div class="profile-photo-wrap">
+
+                <img
+                    src="abhikesh.jpeg"
+                    alt="Abhikesh"
+                    class="profile-photo"
+                >
+
+            </div>
+
+
+            <div class="profile-details">
+
+                <div class="small-title">
+                    JEE 2027 • PERSONAL STUDY SYSTEM
+                </div>
+
+
+                <h1>
+
+                    <span class="name-highlight">
+                        ABHIKESH
+                    </span>
+
+                    <span class="tracker-title">
+                        MASTER STUDY TRACKER
+                    </span>
+
+                </h1>
+
+
+                <p>
+                    Syllabus
+                    <span>•</span>
+                    Classes
+                    <span>•</span>
+                    Questions
+                    <span>•</span>
+                    Short Notes
+                    <span>•</span>
+                    Progress Analysis
+                </p>
+
+
+                <div class="header-badge">
+
+                    <span class="badge-dot"></span>
+
+                    JEE 2027 PREPARATION
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="resetBtn"
+            class="reset-btn"
+        >
+            Reset Progress
+        </button>
+
+    </header>
+
+    <!-- ================= JEE COUNTDOWN ================= -->
+
+    <section class="countdown-section">
+
+        <div class="countdown-header">
+            <div>
+                <span class="countdown-label">JEE 2027 • COUNTDOWN</span>
+                <h2>THE CLOCK IS RUNNING</h2>
+            </div>
+
+            <div class="countdown-live">
+                <span></span>
+                LIVE
+            </div>
+        </div>
+
+        <div class="countdown-grid">
+
+            <!-- JEE MAIN -->
+
+            <div class="countdown-card mains-card">
+
+                <div class="countdown-icon">S</div>
+
+                <div class="countdown-info">
+                    <span class="exam-type">SYLLABUS COMPLITION</span>
+                    <strong>December is coming</strong>
+                </div>
+
+                <div class="countdown-time">
+                    <div>
+                        <b id="mainsDays">---</b>
+                        <span>DAYS</span>
+                    </div>
+
+                    <div>
+                        <b id="mainsHours">--</b>
+                        <span>HOURS</span>
+                    </div>
+
+                    <div>
+                        <b id="mainsMinutes">--</b>
+                        <span>MIN</span>
+                    </div>
+
+                    <div>
+                        <b id="mainsSeconds">--</b>
+                        <span>SEC</span>
+                    </div>
+                </div>
+
+                <small id="mainsDate">
+                    Target date not set
+                </small>
+
+            </div>
+
+
+            <!-- JEE ADVANCED -->
+
+            <div class="countdown-card advanced-card">
+
+                <div class="countdown-icon">M</div>
+
+                <div class="countdown-info">
+                    <span class="exam-type">JEE MAINS 2027</span>
+                    <strong>Target Countdown</strong>
+                </div>
+
+                <div class="countdown-time">
+                    <div>
+                        <b id="advancedDays">---</b>
+                        <span>DAYS</span>
+                    </div>
+
+                    <div>
+                        <b id="advancedHours">--</b>
+                        <span>HOURS</span>
+                    </div>
+
+                    <div>
+                        <b id="advancedMinutes">--</b>
+                        <span>MIN</span>
+                    </div>
+
+                    <div>
+                        <b id="advancedSeconds">--</b>
+                        <span>SEC</span>
+                    </div>
+                </div>
+
+                <small id="advancedDate">
+                    Target date not set
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= OVERALL ANALYSIS ================= -->
+
+    <section class="dashboard">
+
+
+        <div class="card overall-card">
+
+            <div class="card-title">
+                OVERALL PREPARATION
+            </div>
+
+
+            <div class="progress-ring">
+
+                <svg viewBox="0 0 120 120">
+
+                    <circle
+                        class="ring-bg"
+                        cx="60"
+                        cy="60"
+                        r="50"
+                    ></circle>
+
+
+                    <circle
+                        id="overallRing"
+                        class="ring-progress"
+                        cx="60"
+                        cy="60"
+                        r="50"
+                    ></circle>
+
+                </svg>
+
+
+                <div class="ring-text">
+
+                    <strong id="overallPercent">
+                        0%
+                    </strong>
+
+                    <span>
+                        Complete
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="overall-count">
+
+                <strong id="checkedCount">
+                    0
+                </strong>
+
+                /
+
+                <span id="totalCount">
+                    0
+                </span>
+
+                tasks completed
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SUBJECT ANALYSIS -->
+
+        <div class="card">
+
+            <div class="card-title">
+                SUBJECT ANALYSIS
+            </div>
+
+
+            <div class="subject-progress">
+
+
+                <div class="subject-row">
+
+                    <div class="subject-info">
+
+                        <span class="subject-name math-text">
+                            Mathematics
+                        </span>
+
+                        <span id="mathPercent">
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="mathBar"
+                            class="progress-fill math-fill"
+                        ></div>
+
+                    </div>
+
+
+                    <small id="mathCount">
+                        0 / 0
+                    </small>
+
+                </div>
+
+
+
+                <div class="subject-row">
+
+                    <div class="subject-info">
+
+                        <span class="subject-name physics-text">
+                            Physics
+                        </span>
+
+                        <span id="physicsPercent">
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="physicsBar"
+                            class="progress-fill physics-fill"
+                        ></div>
+
+                    </div>
+
+
+                    <small id="physicsCount">
+                        0 / 0
+                    </small>
+
+                </div>
+
+
+
+                <div class="subject-row">
+
+                    <div class="subject-info">
+
+                        <span class="subject-name chemistry-text">
+                            Chemistry
+                        </span>
+
+                        <span id="chemistryPercent">
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="chemistryBar"
+                            class="progress-fill chemistry-fill"
+                        ></div>
+
+                    </div>
+
+
+                    <small id="chemistryCount">
+                        0 / 0
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- QUICK STATS -->
+
+        <div class="card stats-card">
+
+            <div class="card-title">
+                QUICK STATS
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat">
+
+                    <strong id="completedChapters">
+                        0
+                    </strong>
+
+                    <span>
+                        Chapters<br>
+                        Started
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="completedClasses">
+                        0
+                    </strong>
+
+                    <span>
+                        Classes<br>
+                        Completed
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="completedQuestions">
+                        0
+                    </strong>
+
+                    <span>
+                        Question<br>
+                        Rounds
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="completedNotes">
+                        0
+                    </strong>
+
+                    <span>
+                        Notes<br>
+                        Rounds
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= TABS ================= -->
+
+    <nav class="tabs">
+
+        <button
+            class="tab active math-tab"
+            data-subject="math"
+        >
+            Mathematics
+        </button>
+
+
+        <button
+            class="tab physics-tab"
+            data-subject="physics"
+        >
+            Physics
+        </button>
+
+
+        <button
+            class="tab chemistry-tab"
+            data-subject="chemistry"
+        >
+            Chemistry
+        </button>
+
+    </nav>
+
+
+
+    <!-- ================= TOOLBAR ================= -->
+
+    <div class="toolbar">
+
+        <input
+            id="searchBox"
+            type="text"
+            placeholder="Search chapter..."
+            autocomplete="off"
+        >
+
+
+        <span id="visibleCount">
+            0 chapters
+        </span>
+
+    </div>
+
+
+
+    <!-- ================= TABLE ================= -->
+
+    <main>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>
+                            Chapter / Topic
+                        </th>
+
+                        <th>
+                            Classes
+                        </th>
+
+                        <th>
+                            Questions<br>
+                            <small>X1</small>
+                        </th>
+
+                        <th>
+                            Questions<br>
+                            <small>X2</small>
+                        </th>
+
+                        <th>
+                            Short Notes<br>
+                            <small>X1</small>
+                        </th>
+
+                        <th>
+                            Short Notes<br>
+                            <small>X2</small>
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="chapterTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <span>
+            ABHIKESH • JEE 2027 MASTER TRACKER
+        </span>
+
+        <span>
+            Progress is automatically saved in this browser
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
