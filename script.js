@@ -184,14 +184,139 @@ function saveValue(subject, chapterIndex, task, value) {
     }
 
 }
+/* =====================================================
+   LOAD FIREBASE PROGRESS
+===================================================== */
 
+window.loadFirebaseProgress =
+    async function() {
+
+        if (
+            !window.firebaseUser ||
+            !window.loadTrackerFromFirebase
+        ) {
+            return;
+        }
+
+
+        const cloudData =
+            await window.loadTrackerFromFirebase();
+
+
+        if (!cloudData) {
+            return;
+        }
+
+
+        Object.keys(cloudData).forEach(key => {
+
+            const parts =
+                key.split("_");
+
+
+            if (parts.length !== 3) {
+                return;
+            }
+
+
+            const subject =
+                parts[0];
+
+            const chapterIndex =
+                parts[1];
+
+            const task =
+                parts[2];
+
+
+            localStorage.setItem(
+                storageKey(
+                    subject,
+                    chapterIndex,
+                    task
+                ),
+                cloudData[key]
+            );
+
+        });
+
+
+        renderTable();
+
+        calculateAll();
+
+
+        console.log(
+            "☁️ Tracker synchronized from Firebase."
+        );
+
+    };
 
 
 
 /* =====================================================
    4. CREATE TABLE
 ===================================================== */
+/* =====================================================
+   FIREBASE → TRACKER SYNC
+===================================================== */
 
+async function syncFromFirebase() {
+
+    if (!window.loadTrackerFromFirebase) {
+        return;
+    }
+
+    const firebaseData =
+        await window.loadTrackerFromFirebase();
+
+    if (!firebaseData || Object.keys(firebaseData).length === 0) {
+        return;
+    }
+
+    Object.keys(firebaseData).forEach(key => {
+
+        const parts = key.split("_");
+
+        if (parts.length < 3) {
+            return;
+        }
+
+        const task =
+            parts.pop();
+
+        const chapterIndex =
+            parts.pop();
+
+        const subject =
+            parts.join("_");
+
+        if (
+            subjects[subject] &&
+            TASKS.includes(task)
+        ) {
+
+            localStorage.setItem(
+                storageKey(
+                    subject,
+                    chapterIndex,
+                    task
+                ),
+                firebaseData[key]
+            );
+
+        }
+
+    });
+
+    console.log(
+        "☁️ Tracker synchronized from Firebase."
+    );
+
+    renderTable();
+    calculateAll();
+
+}
 function renderTable() {
 
     const table = document.getElementById("chapterTable");
@@ -844,11 +969,13 @@ document
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    async function () {
 
         renderTable();
 
         calculateAll();
+
+        await syncFromFirebase();
 
     }
 );
