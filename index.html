@@ -690,10 +690,10 @@
     import {
     getFirestore,
     doc,
-    setDoc
+    setDoc,
+    getDoc
 }
-    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
     const firebaseConfig = {
   apiKey: "AIzaSyD5bmDe_0ta2w7wo_Ivz9B4SYLIOlUOnOQ",
   authDomain: "abhikesh-jee-tracker.firebaseapp.com",
@@ -709,7 +709,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 /* =================================================
-   SAVE TRACKER PROGRESS TO FIREBASE
+   FIRESTORE TRACKER SYNC
 ================================================= */
 
 window.saveTrackerToFirebase =
@@ -718,7 +718,11 @@ window.saveTrackerToFirebase =
         if (!auth.currentUser) {
             return;
         }
-
+console.log(
+    "🔎 FIREBASE AUTH CHECK:",
+    auth.currentUser.uid,
+    auth.currentUser.email
+);
         try {
 
             const progressRef = doc(
@@ -757,76 +761,33 @@ window.saveTrackerToFirebase =
     };
 
 
-    window.firebaseAuth = auth;
-    window.firebaseDB = db;
 /* =================================================
-   FIRESTORE TRACKER DATA
+   LOAD TRACKER FROM FIREBASE
 ================================================= */
-
-const trackerRef = doc(
-    db,
-    "trackers",
-    "abhikesh"
-);
-
-
-/* SAVE ONE CHECKBOX */
-
-window.saveTrackerToFirebase =
-    async function(
-        subject,
-        chapterIndex,
-        task,
-        value
-    ) {
-
-        try {
-
-            await setDoc(
-                trackerRef,
-                {
-                    [`${subject}_${chapterIndex}_${task}`]: value
-                },
-                {
-                    merge: true
-                }
-            );
-
-            console.log(
-                "Firebase saved:",
-                subject,
-                chapterIndex,
-                task,
-                value
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Firebase save error:",
-                error
-            );
-
-        }
-
-    };
-
-
-/* LOAD ALL TRACKER DATA */
 
 window.loadTrackerFromFirebase =
     async function() {
 
+        if (!auth.currentUser) {
+            return {};
+        }
+
         try {
 
+            const progressRef = doc(
+                db,
+                "trackerProgress",
+                auth.currentUser.uid
+            );
+
             const snapshot =
-                await getDoc(trackerRef);
+                await getDoc(progressRef);
 
 
             if (!snapshot.exists()) {
 
                 console.log(
-                    "No tracker data found in Firebase yet."
+                    "☁️ No Firebase progress found yet."
                 );
 
                 return {};
@@ -835,7 +796,7 @@ window.loadTrackerFromFirebase =
 
 
             console.log(
-                "Firebase tracker data loaded."
+                "☁️ Firebase progress loaded."
             );
 
 
@@ -844,7 +805,7 @@ window.loadTrackerFromFirebase =
         } catch (error) {
 
             console.error(
-                "Firebase load error:",
+                "❌ Firebase load error:",
                 error
             );
 
@@ -854,6 +815,10 @@ window.loadTrackerFromFirebase =
 
     };
 
+
+window.firebaseAuth = auth;
+
+window.firebaseDB = db;
     /* =================================================
        OWNER LOGIN TEST
     ================================================= */
