@@ -3572,3 +3572,30 @@ tr.row-complete td:nth-child(2)::before {
     color: #f87171 !important;
     font-size: 12px !important;
 }
+
+/* Fix for Mobile Login Display Fallbacks */
+.login-overlay {
+    display: none !important; /* Hide it by default */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* When active, show the layout flexbox */
+.login-overlay.show, .login-overlay[style*="display: flex"] {
+    display: flex !important;
+}
+
+.login-box {
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
