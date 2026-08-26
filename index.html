@@ -866,6 +866,10 @@ window.firebaseDB = db;
 console.log(
     "🔐 Owner authentication confirmed."
 );
+
+if (window.renderTable) {
+    window.renderTable();
+}
             } else {
 
                 console.log(

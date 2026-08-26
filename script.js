@@ -313,7 +313,7 @@ async function syncFromFirebase() {
     calculateAll();
 
 }
-function renderTable() {
+window.renderTable = function renderTable() {
 
     const table = document.getElementById("chapterTable");
 
@@ -365,20 +365,24 @@ function renderTable() {
                         index,
                         task
                     );
-
+const isOwner =
+    window.firebaseUser &&
+    window.firebaseUser.uid ===
+    "Of8L3iLIUvTbCU1QGjP2BGKWsqV2";
 
                 checkboxes += `
 
                     <td class="check-cell">
 
-                        <input
-                            type="checkbox"
-                            class="check"
-                            data-subject="${currentSubject}"
-                            data-chapter="${index}"
-                            data-task="${task}"
-                            ${checked ? "checked" : ""}
-                        >
+                       <input
+    type="checkbox"
+    class="check"
+    data-subject="${currentSubject}"
+    data-chapter="${index}"
+    data-task="${task}"
+    ${checked ? "checked" : ""}
+    ${!isOwner ? "disabled" : ""}
+>
 
                     </td>
 
@@ -438,8 +442,22 @@ function attachCheckboxListeners() {
 
         box.addEventListener(
             "change",
-            function () {
 
+            function () {
+if (
+    !window.firebaseUser ||
+    window.firebaseUser.uid !==
+    "Of8L3iLIUvTbCU1QGjP2BGKWsqV2"
+) {
+
+    this.checked = !this.checked;
+
+    alert(
+        "🔒 Owner login required to change progress."
+    );
+
+    return;
+}
                 const subject =
                     this.dataset.subject;
 
@@ -888,7 +906,18 @@ document
     .addEventListener(
         "click",
         function () {
+if (
+    !window.firebaseUser ||
+    window.firebaseUser.uid !==
+    "Of8L3iLIUvTbCU1QGjP2BGKWsqV2"
+) {
 
+    alert(
+        "🔒 Owner login required to reset progress."
+    );
+
+    return;
+}
             const lockCode = "082025";
 
             const enteredCode =
