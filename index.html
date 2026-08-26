@@ -25,21 +25,37 @@
     <div class="access-bar">
 
         <div class="access-status">
-
             <span id="accessDot"></span>
-
-            <span id="accessText">
-                👁️ VIEW MODE
-            </span>
-
+            <span id="accessText">👁️ VISITOR MODE</span>
         </div>
 
         <button
-            id="ownerLoginBtn"
-            class="owner-login-btn"
+            id="menuBtn"
+            class="menu-btn"
+            type="button"
+            aria-label="Open menu"
+            aria-expanded="false"
         >
-            🔐 Owner Login
+            <span></span>
+            <span></span>
+            <span></span>
         </button>
+
+        <div id="modeMenu" class="mode-menu">
+            <div class="mode-menu-title">ACCESS MODE</div>
+            <button id="visitorModeBtn" class="mode-menu-item" type="button">
+                👁️ <span>Visitor Mode</span>
+                <small>View only</small>
+            </button>
+            <button id="ownerModeBtn" class="mode-menu-item" type="button">
+                👑 <span>Owner Mode</span>
+                <small>Edit tracker</small>
+            </button>
+            <button id="logoutBtn" class="mode-menu-item logout-item" type="button" style="display:none;">
+                🚪 <span>Logout</span>
+                <small>Leave Owner Mode</small>
+            </button>
+        </div>
 
     </div>
 
@@ -475,74 +491,44 @@
 
 
 
-        <!-- QUICK STATS -->
+        <!-- TASK PROGRESS CIRCLES -->
+        <div class="card task-circles-card">
+            <div class="card-title">TASK PROGRESS</div>
 
-        <div class="card stats-card">
+            <div class="task-circles">
+                <div class="task-circle-item">
+                    <div class="task-circle" id="classesCircle" style="--progress: 0%;">
+                        <div class="task-circle-inner">
+                            <strong id="classesPercent">0%</strong>
+                            <span>CLASSES</span>
+                        </div>
+                    </div>
+                    <small id="classesCircleCount">0 / 0</small>
+                    <b>Completed</b>
+                </div>
 
-            <div class="card-title">
-                QUICK STATS
+                <div class="task-circle-item">
+                    <div class="task-circle" id="questionsCircle" style="--progress: 0%;">
+                        <div class="task-circle-inner">
+                            <strong id="questionsPercent">0%</strong>
+                            <span>QUESTIONS</span>
+                        </div>
+                    </div>
+                    <small id="questionsCircleCount">0 / 0</small>
+                    <b>Completed</b>
+                </div>
+
+                <div class="task-circle-item">
+                    <div class="task-circle" id="notesCircle" style="--progress: 0%;">
+                        <div class="task-circle-inner">
+                            <strong id="notesPercent">0%</strong>
+                            <span>SHORT NOTES</span>
+                        </div>
+                    </div>
+                    <small id="notesCircleCount">0 / 0</small>
+                    <b>Completed</b>
+                </div>
             </div>
-
-
-            <div class="stats-grid">
-
-                <div class="stat">
-
-                    <strong id="completedChapters">
-                        0
-                    </strong>
-
-                    <span>
-                        Chapters<br>
-                        Started
-                    </span>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <strong id="completedClasses">
-                        0
-                    </strong>
-
-                    <span>
-                        Classes<br>
-                        Completed
-                    </span>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <strong id="completedQuestions">
-                        0
-                    </strong>
-
-                    <span>
-                        Question<br>
-                        Rounds
-                    </span>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <strong id="completedNotes">
-                        0
-                    </strong>
-
-                    <span>
-                        Notes<br>
-                        Rounds
-                    </span>
-
-                </div>
-
-            </div>
-
         </div>
 
     </section>
@@ -683,7 +669,9 @@
         getAuth,
         signInWithEmailAndPassword,
         signOut,
-        onAuthStateChanged
+        onAuthStateChanged,
+        setPersistence,
+        browserLocalPersistence
     }
         from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
@@ -820,11 +808,13 @@ window.firebaseDB = db;
 
             try {
 
+                await setPersistence(auth, browserLocalPersistence);
                 await signInWithEmailAndPassword(
                     auth,
                     email,
                     password
                 );
+                localStorage.setItem("jee_owner_email", email);
 
                 return {
                     success: true
@@ -850,6 +840,74 @@ window.firebaseDB = db;
         };
 
 
+    window.updateAccessUI = function(user) {
+
+        const accessText = document.getElementById("accessText");
+        const accessDot = document.getElementById("accessDot");
+        const ownerModeBtn = document.getElementById("ownerModeBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const visitorModeBtn = document.getElementById("visitorModeBtn");
+
+        if (user) {
+            accessText.textContent = "👑 OWNER MODE • EDITING";
+            accessDot.classList.add("owner-dot");
+            accessDot.classList.remove("visitor-dot");
+            ownerModeBtn.classList.add("active-mode");
+            visitorModeBtn.classList.remove("active-mode");
+            logoutBtn.style.display = "flex";
+        } else {
+            accessText.textContent = "👁️ VISITOR MODE • VIEW ONLY";
+            accessDot.classList.add("visitor-dot");
+            accessDot.classList.remove("owner-dot");
+            visitorModeBtn.classList.add("active-mode");
+            ownerModeBtn.classList.remove("active-mode");
+            logoutBtn.style.display = "none";
+        }
+    };
+
+    const menuBtn = document.getElementById("menuBtn");
+    const modeMenu = document.getElementById("modeMenu");
+
+    menuBtn.addEventListener("click", function(event) {
+        event.stopPropagation();
+        const open = modeMenu.classList.toggle("open");
+        menuBtn.classList.toggle("open", open);
+        menuBtn.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!modeMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+            modeMenu.classList.remove("open");
+            menuBtn.classList.remove("open");
+            menuBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.getElementById("visitorModeBtn").addEventListener("click", async function() {
+        if (auth.currentUser) {
+            await signOut(auth);
+        }
+        modeMenu.classList.remove("open");
+        menuBtn.classList.remove("open");
+    });
+
+    document.getElementById("ownerModeBtn").addEventListener("click", function() {
+        if (auth.currentUser) {
+            modeMenu.classList.remove("open");
+            menuBtn.classList.remove("open");
+            return;
+        }
+        document.getElementById("loginOverlay").style.display = "flex";
+        modeMenu.classList.remove("open");
+        menuBtn.classList.remove("open");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async function() {
+        await signOut(auth);
+        modeMenu.classList.remove("open");
+        menuBtn.classList.remove("open");
+    });
+
     onAuthStateChanged(
         auth,
         function(user) {
@@ -862,6 +920,7 @@ window.firebaseDB = db;
                 );
 
                 window.firebaseUser = user;
+                window.updateAccessUI(user);
 
 console.log(
     "🔐 Owner authentication confirmed."
@@ -877,6 +936,7 @@ if (window.renderTable) {
                 );
 
                 window.firebaseUser = null;
+                window.updateAccessUI(null);
 
             }
 
@@ -886,20 +946,6 @@ if (window.renderTable) {
     /* =================================================
        OWNER LOGIN UI
     ================================================= */
-
-    document
-        .getElementById("ownerLoginBtn")
-        .addEventListener(
-            "click",
-            function() {
-
-                document
-                    .getElementById("loginOverlay")
-                    .style.display = "flex";
-
-            }
-        );
-
 
     document
         .getElementById("closeLoginBtn")
@@ -913,6 +959,11 @@ if (window.renderTable) {
 
             }
         );
+
+    const rememberedOwnerEmail = localStorage.getItem("jee_owner_email");
+    if (rememberedOwnerEmail) {
+        document.getElementById("ownerEmail").value = rememberedOwnerEmail;
+    }
 
     /* =================================================
        OWNER LOGIN SUBMIT

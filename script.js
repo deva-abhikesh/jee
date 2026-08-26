@@ -709,136 +709,62 @@ const checked =
 
 function calculateQuickStats() {
 
-    let chaptersStarted = 0;
-
     let classes = 0;
-
     let questions = 0;
-
     let notes = 0;
 
+    let totalChapters = 0;
 
-    Object.keys(subjects).forEach(
-        subject => {
+    Object.keys(subjects).forEach(subject => {
+        totalChapters += subjects[subject].length;
 
-            subjects[subject].forEach(
-                (_, chapterIndex) => {
+        subjects[subject].forEach((_, chapterIndex) => {
 
-                    const chapterTasks =
-                        TASKS.map(
-                            task =>
-                                getSavedValue(
-                                    subject,
-                                    chapterIndex,
-                                    task
-                                )
-                        );
+            if (getSavedValue(subject, chapterIndex, "classes")) {
+                classes++;
+            }
 
+            if (getSavedValue(subject, chapterIndex, "q1")) {
+                questions++;
+            }
 
-                    if (
-                        chapterTasks.some(
-                            value => value
-                        )
-                    ) {
+            if (getSavedValue(subject, chapterIndex, "q2")) {
+                questions++;
+            }
 
-                        chaptersStarted++;
+            if (getSavedValue(subject, chapterIndex, "n1")) {
+                notes++;
+            }
 
-                    }
+            if (getSavedValue(subject, chapterIndex, "n2")) {
+                notes++;
+            }
 
+        });
+    });
 
-                    if (
-                        getSavedValue(
-                            subject,
-                            chapterIndex,
-                            "classes"
-                        )
-                    ) {
+    const classTotal = totalChapters;
+    const questionTotal = totalChapters * 2;
+    const noteTotal = totalChapters * 2;
 
-                        classes++;
+    const classPercent = classTotal ? Math.round((classes / classTotal) * 100) : 0;
+    const questionPercent = questionTotal ? Math.round((questions / questionTotal) * 100) : 0;
+    const notePercent = noteTotal ? Math.round((notes / noteTotal) * 100) : 0;
 
-                    }
+    const updateCircle = (circleId, percentId, countId, percent, checked, total) => {
+        const circle = document.getElementById(circleId);
+        if (circle) circle.style.setProperty("--progress", `${percent}%`);
 
+        const percentEl = document.getElementById(percentId);
+        if (percentEl) percentEl.textContent = `${percent}%`;
 
-                    if (
-                        getSavedValue(
-                            subject,
-                            chapterIndex,
-                            "q1"
-                        )
-                    ) {
+        const countEl = document.getElementById(countId);
+        if (countEl) countEl.textContent = `${checked} / ${total}`;
+    };
 
-                        questions++;
-
-                    }
-
-
-                    if (
-                        getSavedValue(
-                            subject,
-                            chapterIndex,
-                            "q2"
-                        )
-                    ) {
-
-                        questions++;
-
-                    }
-
-
-                    if (
-                        getSavedValue(
-                            subject,
-                            chapterIndex,
-                            "n1"
-                        )
-                    ) {
-
-                        notes++;
-
-                    }
-
-
-                    if (
-                        getSavedValue(
-                            subject,
-                            chapterIndex,
-                            "n2"
-                        )
-                    ) {
-
-                        notes++;
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    document.getElementById(
-        "completedChapters"
-    ).textContent =
-        chaptersStarted;
-
-
-    document.getElementById(
-        "completedClasses"
-    ).textContent =
-        classes;
-
-
-    document.getElementById(
-        "completedQuestions"
-    ).textContent =
-        questions;
-
-
-    document.getElementById(
-        "completedNotes"
-    ).textContent =
-        notes;
+    updateCircle("classesCircle", "classesPercent", "classesCircleCount", classPercent, classes, classTotal);
+    updateCircle("questionsCircle", "questionsPercent", "questionsCircleCount", questionPercent, questions, questionTotal);
+    updateCircle("notesCircle", "notesPercent", "notesCircleCount", notePercent, notes, noteTotal);
 
 }
 
