@@ -776,17 +776,8 @@ window.loadTrackerFromFirebase =
                 "Of8L3iLIUvTbCU1QGjP2BGKWsqV2"
             );
 
-        try {
-
-            const progressRef = doc(
-                db,
-                "trackerProgress",
-                auth.currentUser.uid
-            );
-
             const snapshot =
                 await getDoc(progressRef);
-
 
             if (!snapshot.exists()) {
 
@@ -798,11 +789,9 @@ window.loadTrackerFromFirebase =
 
             }
 
-
             console.log(
                 "☁️ Firebase progress loaded."
             );
-
 
             return snapshot.data();
 
@@ -818,7 +807,6 @@ window.loadTrackerFromFirebase =
         }
 
     };
-
 
 window.firebaseAuth = auth;
 
@@ -874,15 +862,10 @@ window.firebaseDB = db;
                 );
 
                 window.firebaseUser = user;
- if (window.loadFirebaseProgress) {
 
-    window.loadFirebaseProgress();
-
-} else {
-
-    window.firebaseLoadPending = true;
-
-}
+console.log(
+    "🔐 Owner authentication confirmed."
+);
             } else {
 
                 console.log(
@@ -1000,7 +983,7 @@ window.firebaseDB = db;
                     message.textContent =
                         "❌ Login failed. Please check your email and password.";
 
-                    console.error(
+                                        console.error(
                         "Firebase login error:",
                         result.message
                     );
@@ -1012,8 +995,8 @@ window.firebaseDB = db;
 
 </script>
 
-<link rel="stylesheet" href="style.css?v=3">
-<script src="script.js?v=3"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
+

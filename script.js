@@ -191,13 +191,9 @@ function saveValue(subject, chapterIndex, task, value) {
 window.loadFirebaseProgress =
     async function() {
 
-        if (
-            !window.firebaseUser ||
-            !window.loadTrackerFromFirebase
-        ) {
-            return;
-        }
-
+       if (!window.loadTrackerFromFirebase) {
+    return;
+}
 
         const cloudData =
             await window.loadTrackerFromFirebase();
@@ -975,7 +971,11 @@ document.addEventListener(
 
         calculateAll();
 
-        await syncFromFirebase();
+        if (window.loadFirebaseProgress) {
+
+            await window.loadFirebaseProgress();
+
+        }
 
     }
 );
