@@ -40,63 +40,82 @@ const subjects = {
 
 
     physics: [
-        "MATHS TOOLS",
-        "1D KINEMATICS",
-        "2D KINEMATICS",
-        "NLM",
-        "CIRCULAR MOTION",
-        "WEP",
-        "COM & COLLISION",
-        "ROTATION",
-        "SHM",
-        "KTG & THERMODYNAMICS",
-        "SOLIDS",
-        "THERMAL PROPERTIES",
-        "FLUIDS",
-        "WAVES",
-        "WAVE OPTICS",
-        "ELECTRIC FIELD",
-        "POTENTIAL & CAPACITANCE",
-        "GRAVITATION",
-        "CURRENT ELECTRICITY",
-        "MOVING CHARGES & MAGNETISM",
-        "MAGNETISM & MATTER",
-        "EMI",
-        "AC",
-        "DUAL NATURE",
-        "ATOMS",
-        "NUCLEI",
-        "SEMICONDUCTORS",
-        "EM WAVES",
-        "UNITS & MEASUREMENTS",
-        "RAY OPTICS"
+
+        "Basic Math & Vector Tools",
+        "Kinematics (1D & 2D)",
+        "Geometrical Optics (Ray Optics)",
+        "Newton's Laws of Motion (NLM)",
+        "Work, Power & Energy (WPE)",
+        "Circular Motion",
+        "Center of Mass & Collision",
+        "Rotational Motion",
+        "Simple Harmonic Motion (SHM)",
+        "Electrostatics",
+        "Conductors",
+        "Gravitation",
+        "Current Electricity",
+        "Heat Transfer",
+        "Capacitance",
+        "Magnetic Effect of Current (EMF)",
+        "Magnetic Properties of Matter",
+        "Electromagnetic Induction (EMI)",
+        "Alternating Current (AC)",
+        "Electromagnetic Waves (EMW)",
+        "Modern Physics",
+        "Fluid Mechanics",
+        "Viscosity",
+        "Elasticity",
+        "Kinetic Theory of Gases (KTG)",
+        "Calorimetry",
+        "Thermal Expansion",
+        "Thermodynamics",
+        "Wave on a String",
+        "Sound Waves",
+        "Wave Optics",
+        "Optical Instruments",
+        "Semiconductors",
+        "Communication System",
+        "Errors & Measurements",
+        "Surface Tension"
+
     ],
 
 
     chemistry: [
-        "BASIC CONCEPTS",
-        "REDOX",
-        "SOLUTIONS",
-        "CHEMICAL KINETICS",
-        "THERMODYNAMICS",
-        "CHEMICAL EQUILIBRIUM",
-        "IONIC EQUILIBRIUM",
-        "ATOMIC STRUCTURE",
-        "ELECTROCHEMISTRY",
-        "PERIODIC TABLE",
-        "CHEMICAL BONDING",
-        "IUPAC",
-        "GOC",
-        "ISOMERISM",
-        "HYDROCARBONS",
-        "HALOALKANES & HALOARENES",
-        "ALDEHYDES, KETONES & CARBOXYLIC ACIDS",
-        "AMINES",
-        "BIOMOLECULES",
-        "COORDINATION CHEMISTRY",
-        "QUALITATIVE ANALYSIS",
-        "P-BLOCK",
-        "D & F-BLOCK"
+
+        "Introduction to Chemistry",
+        "Atomic Structure",
+        "Mole Concept",
+        "Periodic Table & Periodicity",
+        "Basic Inorganic Nomenclature (BIN)",
+        "Gaseous State",
+        "Chemical Bonding",
+        "Chemical Equilibrium",
+        "Thermodynamics",
+        "Thermochemistry",
+        "Ionic Equilibrium",
+        "Equivalent Concept",
+        "s-Block Elements",
+        "p-Block Elements",
+        "Hydrogen",
+        "Solutions & Colligative Properties",
+        "Coordination Compounds",
+        "Solid State",
+        "Electrochemistry",
+        "General Inorganic Chemistry (GIC)",
+        "Metallurgy",
+        "Qualitative Analysis (Salt Analysis)",
+        "Chemical Kinetics",
+        "Surface Chemistry",
+        "d & f Block Elements",
+        "GOC & Isomerism",
+        "Hydrocarbons",
+        "Haloalkanes & Haloarenes",
+        "Alcohols, Phenols & Ethers",
+        "Aldehydes, Ketones & Carboxylic Acids",
+        "Amines (Nitrogen Compounds)",
+        "Biomolecules"
+
     ]
 
 };
@@ -709,6 +728,10 @@ function calculateQuickStats() {
                 questions++;
             }
 
+            if (getSavedValue(subject, chapterIndex, "q2")) {
+                questions++;
+            }
+
             if (getSavedValue(subject, chapterIndex, "n1")) {
                 notes++;
             }
@@ -721,7 +744,7 @@ function calculateQuickStats() {
     });
 
     const classTotal = totalChapters;
-    const questionTotal = totalChapters;
+    const questionTotal = totalChapters * 2;
     const noteTotal = totalChapters * 2;
 
     const classPercent = classTotal ? Math.round((classes / classTotal) * 100) : 0;
@@ -891,36 +914,6 @@ if (
 
         }
     );
-const TRACKER_CHAPTER_VERSION = "physics-chemistry-reset-v1";
-
-async function resetPhysicsChemistryProgressForNewChapters() {
-    if (localStorage.getItem(TRACKER_CHAPTER_VERSION) === "done") return;
-
-    const tasksToReset = ["classes", "q1", "q2", "n1", "n2"];
-
-    ["physics", "chemistry"].forEach(subject => {
-        subjects[subject].forEach((_, chapterIndex) => {
-            tasksToReset.forEach(task => {
-                localStorage.setItem(storageKey(subject, chapterIndex, task), "false");
-            });
-        });
-    });
-
-    // If the owner is already signed in, also clear the corresponding
-    // Firebase fields so the reset is reflected in the shared tracker.
-    if (window.firebaseUser && window.saveTrackerToFirebase) {
-        for (const subject of ["physics", "chemistry"]) {
-            for (let chapterIndex = 0; chapterIndex < subjects[subject].length; chapterIndex++) {
-                for (const task of tasksToReset) {
-                    await window.saveTrackerToFirebase(subject, chapterIndex, task, false);
-                }
-            }
-        }
-    }
-
-    localStorage.setItem(TRACKER_CHAPTER_VERSION, "done");
-}
-
 /* =====================================================
    14. INITIALIZE
 ===================================================== */
@@ -934,40 +927,164 @@ document.addEventListener(
         calculateAll();
 
         if (window.loadFirebaseProgress) {
-            await window.loadFirebaseProgress();
-        }
 
-        await resetPhysicsChemistryProgressForNewChapters();
-        renderTable();
-        calculateAll();
+            await window.loadFirebaseProgress();
+
+        }
 
     }
 );
 
 /* =====================================================
-   15. SYLLABUS COMPLETION COUNTDOWN
+   15. JEE 2027 COUNTDOWN
 ===================================================== */
 
-const SYLLABUS_COMPLETION_DATE = "2026-12-31T23:59:59";
+/*
+   IMPORTANT:
+   Replace these two dates when the official
+   JEE 2027 dates are announced.
 
-function updateSyllabusCountdown() {
-    const target = new Date(SYLLABUS_COMPLETION_DATE).getTime();
-    const difference = target - new Date().getTime();
-    const ids = ["mainsDays", "mainsHours", "mainsMinutes", "mainsSeconds", "mainsDate"];
-    if (!ids.every(id => document.getElementById(id))) return;
+   Format:
+   YYYY-MM-DDTHH:MM:SS
+*/
+
+const JEE_MAIN_DATE = "2026-12-01T09:00:00";
+
+const JEE_ADVANCED_DATE = "2027-01-20T09:00:00";
+
+
+function updateCountdown(
+    targetDate,
+    daysId,
+    hoursId,
+    minutesId,
+    secondsId
+) {
+
+    const target =
+        new Date(targetDate).getTime();
+
+    const now =
+        new Date().getTime();
+
+    const difference =
+        target - now;
+
+
     if (difference <= 0) {
-        document.getElementById("mainsDays").textContent = "0";
-        document.getElementById("mainsHours").textContent = "00";
-        document.getElementById("mainsMinutes").textContent = "00";
-        document.getElementById("mainsSeconds").textContent = "00";
-    } else {
-        document.getElementById("mainsDays").textContent = Math.floor(difference / 86400000);
-        document.getElementById("mainsHours").textContent = String(Math.floor(difference / 3600000) % 24).padStart(2, "0");
-        document.getElementById("mainsMinutes").textContent = String(Math.floor(difference / 60000) % 60).padStart(2, "0");
-        document.getElementById("mainsSeconds").textContent = String(Math.floor(difference / 1000) % 60).padStart(2, "0");
+
+        document.getElementById(daysId).textContent = "0";
+        document.getElementById(hoursId).textContent = "00";
+        document.getElementById(minutesId).textContent = "00";
+        document.getElementById(secondsId).textContent = "00";
+
+        return;
+
     }
-    document.getElementById("mainsDate").textContent = "Target: " + new Date(SYLLABUS_COMPLETION_DATE).toLocaleDateString("en-IN", {day:"numeric", month:"long", year:"numeric"});
+
+
+    const days =
+        Math.floor(
+            difference / (1000 * 60 * 60 * 24)
+        );
+
+
+    const hours =
+        Math.floor(
+            (difference / (1000 * 60 * 60)) % 24
+        );
+
+
+    const minutes =
+        Math.floor(
+            (difference / (1000 * 60)) % 60
+        );
+
+
+    const seconds =
+        Math.floor(
+            (difference / 1000) % 60
+        );
+
+
+    document.getElementById(daysId).textContent =
+        days;
+
+    document.getElementById(hoursId).textContent =
+        String(hours).padStart(2, "0");
+
+    document.getElementById(minutesId).textContent =
+        String(minutes).padStart(2, "0");
+
+    document.getElementById(secondsId).textContent =
+        String(seconds).padStart(2, "0");
+
 }
 
-updateSyllabusCountdown();
-setInterval(updateSyllabusCountdown, 1000);
+
+function updateExamDateLabels() {
+
+    const mainsDate =
+        new Date(JEE_MAIN_DATE);
+
+    const advancedDate =
+        new Date(JEE_ADVANCED_DATE);
+
+
+    document.getElementById("mainsDate").textContent =
+        "Target: " +
+        mainsDate.toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    document.getElementById("advancedDate").textContent =
+        "Target: " +
+        advancedDate.toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+}
+
+
+function updateJEECountdowns() {
+
+    updateCountdown(
+        JEE_MAIN_DATE,
+        "mainsDays",
+        "mainsHours",
+        "mainsMinutes",
+        "mainsSeconds"
+    );
+
+
+    updateCountdown(
+        JEE_ADVANCED_DATE,
+        "advancedDays",
+        "advancedHours",
+        "advancedMinutes",
+        "advancedSeconds"
+    );
+
+}
+
+
+updateExamDateLabels();
+
+updateJEECountdowns();
+
+
+setInterval(
+    updateJEECountdowns,
+    1000
+);
